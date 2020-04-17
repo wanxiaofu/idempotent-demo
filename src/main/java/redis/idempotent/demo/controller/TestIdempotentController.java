@@ -22,8 +22,9 @@ public class TestIdempotentController {
 
     @Idempotent(prefix = "pay")
     @PostMapping("/test")
-    public Response testIdempotent(@RequestBody InsertDTO dto) {
+    public Response testIdempotent(@RequestBody InsertDTO dto) throws Exception{
         System.out.println("dto = " + dto);
+        Thread.sleep(2000);
         return Response.ok();
     }
 
