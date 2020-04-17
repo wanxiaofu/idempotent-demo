@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @author wanxf
  */
-@Target({ElementType.FIELD})
+@Target({ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited

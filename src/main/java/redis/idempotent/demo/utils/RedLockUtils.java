@@ -1,5 +1,7 @@
 package redis.idempotent.demo.utils;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * @author hank
  * @date 2019/11/5 0005 下午 15:01
@@ -40,10 +42,11 @@ public interface RedLockUtils {
      * @param leaseTime MILLISECONDS the maximum time to hold the lock after granting it,
      *        before automatically releasing it if it hasn't already been released by invoking <code>unlock</code>.
      *        If leaseTime is -1, hold the lock until explicitly unlocked.
-     * @param lockKey
+     * @param lockKey key
+     * @param timeUnit leaseTime timeUnit
      * @return Result<>
      */
-    void lock(String lockKey, long leaseTime);
+    void lock(String lockKey, long leaseTime, TimeUnit timeUnit);
 
     /**
      * Returns <code>true</code> as soon as the lock is acquired.
@@ -53,13 +56,14 @@ public interface RedLockUtils {
      * giving up and returning <code>false</code>. If the lock is acquired,
      * it is held until <code>unlock</code> is invoked, or until <code>leaseTime</code>
      * have passed since the lock was granted - whichever comes first.
-     * @param lockKey
+     * @param lockKey key
      * @param waitTime the maximum time to aquire the lock  MILLISECONDS
-     * @param leaseTime lease time MILLISECONDS
+     * @param leaseTime lease time
+     * @param timeUnit lease time timeUnit
      * @return <code>true</code> if lock has been successfully acquired
      * @throws InterruptedException - if the thread is interrupted before or during this method.
      */
-    boolean tryLockTimeout(String lockKey, long waitTime, long leaseTime) throws InterruptedException;
+    boolean tryLockTimeout(String lockKey, long waitTime, long leaseTime,TimeUnit timeUnit) throws InterruptedException;
 
     /**
      * Releases the lock.
@@ -72,7 +76,7 @@ public interface RedLockUtils {
      * an (unchecked) exception if the restriction is violated.
      * Any restrictions and the exception
      * type must be documented by that {@code Lock} implementation.
-     * @param lockKey
+     * @param lockKey key
      */
     void unLock(String lockKey);
 

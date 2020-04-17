@@ -3,10 +3,12 @@ package redis.idempotent.demo.strategy.impl;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ReflectionUtils;
 import redis.idempotent.demo.annotation.Idempotent;
 import redis.idempotent.demo.annotation.IdempotentKeyParam;
 import redis.idempotent.demo.strategy.CacheKeyGenerator;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 
@@ -38,6 +40,19 @@ public class ParamLockKeyGenerator implements CacheKeyGenerator {
                 stringBuilder.append(idempotent.delimiter()).append(args[i]);
             }
         }
+        for (int i = 0; i < parameters.length; i++) {
+            final Object object = args[i];
+            final Field[] fields = object.getClass().getDeclaredFields();
+            for (Field field : fields) {
+                final IdempotentKeyParam annotation = field.getAnnotation(IdempotentKeyParam.class);
+                if (annotation == null) {
+                    continue;
+                }
+                field.setAccessible(true);
+                stringBuilder.append(idempotent.delimiter()).append(ReflectionUtils.getField(field, object));
+            }
+        }
+
         return idempotent.prefix() + stringBuilder.toString();
     }
 }

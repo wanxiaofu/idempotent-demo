@@ -40,9 +40,9 @@ public class RedLockUtilsImpl implements RedLockUtils{
     }
 
     @Override
-    public void lock(String lockKey, long leaseTime) {
+    public void lock(String lockKey, long leaseTime, TimeUnit timeUnit) {
         RLock lock1 = redissonClient.getLock(lockKey);
-        redissonClient.getRedLock(lock1).lock(leaseTime, TimeUnit.MILLISECONDS);
+        redissonClient.getRedLock(lock1).lock(leaseTime, timeUnit);
     }
 
     /**
@@ -60,9 +60,9 @@ public class RedLockUtilsImpl implements RedLockUtils{
      * @throws InterruptedException - if the thread is interrupted before or during this method.
      */
     @Override
-    public boolean tryLockTimeout(String lockKey, long waitTime, long leaseTime) throws InterruptedException {
+    public boolean tryLockTimeout(String lockKey, long waitTime, long leaseTime, TimeUnit timeUnit) throws InterruptedException {
         RLock lock1 = redissonClient.getLock(lockKey);
-        return redissonClient.getRedLock(lock1).tryLock(waitTime, leaseTime, TimeUnit.MILLISECONDS);
+        return redissonClient.getRedLock(lock1).tryLock(waitTime, leaseTime, timeUnit);
     }
     /**
      * Releases the lock.

@@ -26,16 +26,11 @@ public class RedissonSpringDataConfig {
     @Value("${spring.redis.port}")
     private String port;
 
-    @Value("${spring.redis.password}")
-    private String password;
 
     @Bean(destroyMethod = "shutdown")
     public RedissonClient redissonClient() {
         Config config = new Config();
-        SingleServerConfig singleServerConfig = config.useSingleServer().setAddress("redis://" + host + ":" + port);
-        if (StringUtils.isNotBlank(password)) {
-            singleServerConfig.setPassword(password);
-        }
+        config.useSingleServer().setAddress("redis://" + host + ":" + port);
         config.setTransportMode(TransportMode.NIO);
         log.info("------------- redisson -----------------------");
         log.info(config.getTransportMode().toString());

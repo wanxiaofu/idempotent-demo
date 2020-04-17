@@ -2,8 +2,8 @@ package redis.idempotent.demo.config;
 
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import redis.idempotent.demo.common.CommonException;
 import redis.idempotent.demo.common.Response;
+import redis.idempotent.demo.exception.CommonException;
 
 /**
  * <p>

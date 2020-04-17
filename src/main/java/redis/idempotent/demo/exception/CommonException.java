@@ -1,4 +1,6 @@
-package redis.idempotent.demo.common;
+package redis.idempotent.demo.exception;
+
+import redis.idempotent.demo.common.ReturnCode;
 
 /**
  * <p>
