@@ -34,12 +34,12 @@ public class ParamLockKeyGenerator implements CacheKeyGenerator {
         //获取连接点参数值
         Object[] args = joinPoint.getArgs();
         StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0; i < parameters.length; i++) {
+        /*for (int i = 0; i < parameters.length; i++) {
             IdempotentKeyParam annotation = parameters[i].getAnnotation(IdempotentKeyParam.class);
             if (annotation != null) {
                 stringBuilder.append(idempotent.delimiter()).append(args[i]);
             }
-        }
+        }*/
         for (int i = 0; i < parameters.length; i++) {
             final Object object = args[i];
             final Field[] fields = object.getClass().getDeclaredFields();

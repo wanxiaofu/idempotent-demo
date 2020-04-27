@@ -21,7 +21,13 @@ public enum ReturnCode {
     /**
      * 1001
      */
-    RESUBMIT("2001", "请勿重复提交");
+    RESUBMIT("2001", "请勿重复提交"),
+
+    /**
+     * 3001
+     */
+    SERVER_EXCEPTION("3001","服务器异常，请稍等")
+    ;
     private String code;
     private String message;
 

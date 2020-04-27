@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import redis.idempotent.demo.annotation.Idempotent;
+import redis.idempotent.demo.annotation.IdempotentKeyParam;
 import redis.idempotent.demo.common.Response;
 import redis.idempotent.demo.dto.InsertDTO;
 
@@ -24,7 +25,7 @@ public class TestIdempotentController {
     @PostMapping("/test")
     public Response testIdempotent(@RequestBody InsertDTO dto) throws Exception{
         System.out.println("dto = " + dto);
-        Thread.sleep(2000);
+        Thread.sleep(1000);
         return Response.ok();
     }
 

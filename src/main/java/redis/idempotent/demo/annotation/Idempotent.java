@@ -21,7 +21,7 @@ public @interface Idempotent {
      *
      * @return prefix
      */
-    String prefix() default "";
+    String prefix();
 
     /**
      * 锁过期时间 默认值5

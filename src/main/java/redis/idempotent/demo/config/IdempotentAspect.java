@@ -1,5 +1,6 @@
 package redis.idempotent.demo.config;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -27,17 +28,18 @@ import java.util.UUID;
  * @author wanxf
  * @date 2020/04/16
  */
+@Slf4j
 @Aspect
 @Configuration
 public class IdempotentAspect {
 
     private CacheKeyGenerator cacheKeyGenerator;
-    private RedisLockHelper redisLockHelper;
+    private RedLockUtils redLockUtils;
 
     @Autowired
-    public IdempotentAspect(CacheKeyGenerator cacheKeyGenerator, RedisLockHelper redisLockHelper) {
+    public IdempotentAspect(CacheKeyGenerator cacheKeyGenerator, RedLockUtils redLockUtils) {
         this.cacheKeyGenerator = cacheKeyGenerator;
-        this.redisLockHelper = redisLockHelper;
+        this.redLockUtils = redLockUtils;
     }
 
     @Pointcut("@annotation(redis.idempotent.demo.annotation.Idempotent)")
@@ -49,23 +51,23 @@ public class IdempotentAspect {
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         Method method = methodSignature.getMethod();
         Idempotent annotation = method.getAnnotation(Idempotent.class);
-        if (StringUtils.isBlank(annotation.prefix())) {
-            return new RuntimeException("lock key cant be null");
-        }
         String lockKey = cacheKeyGenerator.getLockKey(joinPoint);
-        String value = UUID.randomUUID().toString();
+//        System.out.println("lockKey = " + lockKey);
         try {
-            boolean lock = redisLockHelper.lock(lockKey, value, annotation.expire(), annotation.timeUnit());
+            boolean lock = redLockUtils.tryLockTimeout(lockKey, -1, annotation.expire(), annotation.timeUnit());
             if (!lock) {
                 throw new CommonException(ReturnCode.RESUBMIT);
             }
             try {
                 return joinPoint.proceed();
             } catch (Throwable throwable) {
+                log.error("{}方法执行失败，原因：{}", method.getName(), throwable.getMessage(), throwable);
                 throw new CommonException(ReturnCode.BIZ_FAIL);
             }
+        } catch (InterruptedException e) {
+            throw new CommonException(ReturnCode.SERVER_EXCEPTION);
         } finally {
-            redisLockHelper.unlock(lockKey, value);
+            redLockUtils.unLock(lockKey);
         }
     }
 }
