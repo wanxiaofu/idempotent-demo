@@ -56,7 +56,7 @@ public class PasswordCheckUtil {
         String pw14 = "ABCDEabcde01234";
         String pw15 = "Aa0!";
         //符合要求密码
-        String pw16="abcabc012,";
+        String pw16="Abcabc012,";
 
         System.out.println(pw1.matches(PW_PATTERN));
         System.out.println(pw2.matches(PW_PATTERN));
